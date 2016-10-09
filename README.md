@@ -1,13 +1,10 @@
-# Sprak-akka-http-couchbase-starter-kit
+# Cassandra-sprak-akka-http-starter-kit
 
-Main goal of this project to show an example on how to use Spark ,Akka-http along with Couchbase by making a REST Service.
+Main goal of this project to show an example on how to use Spark ,Akka-http along with Cassandra by making a REST Service.
 
-This project will hep you to make CRUD operations using your own couchbase and Spark installations.
+This project will hep you to make CRUD operations using your own Cassandra and Spark installations.
 
 #Steps for running the Project:
 
-1. Make two buckets i.e userBucket and testUserBucket.
-2. Make View using the userddoc.ddoc file present in resources. 
-3. Make a primary index on both the buckets i.e userBucket and testUserBucket.
-4. Now if you want to run the test case execute "./activator clean compile test"
-5. If you want to run the project execute "./activator clean compile run"
+1. Make a keyspace shiv4nsh
+2. Then make a single table named userBucket 
