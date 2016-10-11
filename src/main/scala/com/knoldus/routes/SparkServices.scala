@@ -34,9 +34,10 @@ trait SparkService extends DatabaseAccess {
           try {
             val user = User(documentId,name,email)
             val isPersisted = create(user)
-            isPersisted match {
-              case true => HttpResponse(StatusCodes.Created, entity = s"Data is successfully persisted with id $documentId")
-              case false => HttpResponse(StatusCodes.InternalServerError, entity = s"Error found for id : $documentId")
+            if (isPersisted) {
+              HttpResponse(StatusCodes.Created, entity = s"Data is successfully persisted with id $documentId")
+            } else {
+              HttpResponse(StatusCodes.InternalServerError, entity = s"Error found for id : $documentId")
             }
           } catch {
             case ex: Throwable =>
@@ -49,7 +50,7 @@ trait SparkService extends DatabaseAccess {
       get {
         complete {
           try {
-            val idAsRDD: Option[Array[String]] = getViaKV(listOfIds)
+            val idAsRDD: Option[Array[User]] = retrieve(listOfIds)
             idAsRDD match {
               case Some(data) => HttpResponse(StatusCodes.OK, entity = data.mkString(","))
               case None => HttpResponse(StatusCodes.InternalServerError, entity = s"Data is not fetched and something went wrong")
@@ -58,22 +59,6 @@ trait SparkService extends DatabaseAccess {
             case ex: Throwable =>
               logger.error(ex, ex.getMessage)
               HttpResponse(StatusCodes.InternalServerError, entity = s"Error found for ids : $listOfIds")
-          }
-        }
-      }
-    } ~ path("delete" / "id" / Segment) { (id: String) =>
-      get {
-        complete {
-          try {
-            val idAsRDD: Option[Array[String]] = deleteViaId(id)
-            idAsRDD match {
-              case Some(data) => HttpResponse(StatusCodes.OK, entity = data.mkString(",") + "is deleted")
-              case None => HttpResponse(StatusCodes.InternalServerError, entity = s"Data is not fetched and something went wrong")
-            }
-          } catch {
-            case ex: Throwable =>
-              logger.error(ex, ex.getMessage)
-              HttpResponse(StatusCodes.InternalServerError, entity = s"Error found for ids : $id")
           }
         }
       }
