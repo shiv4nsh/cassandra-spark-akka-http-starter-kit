@@ -10,6 +10,9 @@ import akka.http.scaladsl.server.{ExceptionHandler, Route}
 import akka.stream.ActorMaterializer
 import com.knoldus.domain.User
 import com.knoldus.factories.DatabaseAccess
+import net.liftweb.json._
+import java.util.Date
+import net.liftweb.json.Extraction._
 
 
 trait SparkService extends DatabaseAccess {
@@ -18,6 +21,7 @@ trait SparkService extends DatabaseAccess {
   implicit val materializer:ActorMaterializer
   val logger = Logging(system, getClass)
 
+
   implicit def myExceptionHandler =
     ExceptionHandler {
       case e: ArithmeticException =>
@@ -25,6 +29,13 @@ trait SparkService extends DatabaseAccess {
           complete(HttpResponse(StatusCodes.InternalServerError, entity = s"Data is not persisted and something went wrong"))
         }
     }
+
+  implicit val formats: Formats = new DefaultFormats {
+    outer =>
+    override val typeHintFieldName = "type"
+    override
+    val typeHints = ShortTypeHints(List(classOf[String], classOf[Date]))
+  }
 
   val sparkRoutes: Route = {
     get {
@@ -52,7 +63,7 @@ trait SparkService extends DatabaseAccess {
           try {
             val idAsRDD: Option[Array[User]] = retrieve(listOfIds)
             idAsRDD match {
-              case Some(data) => HttpResponse(StatusCodes.OK, entity = data.mkString(","))
+              case Some(data) => HttpResponse(StatusCodes.OK, entity = data.headOption.fold("")(x => compact(render(decompose(x)))))
               case None => HttpResponse(StatusCodes.InternalServerError, entity = s"Data is not fetched and something went wrong")
             }
           } catch {

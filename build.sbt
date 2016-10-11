@@ -3,7 +3,7 @@ name := "cassandra-spark-akka-http-starter-kit"
 
 version := "1.0"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 organization := "com.knoldus"
 
@@ -16,7 +16,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-testkit" % akkaV % "test",
   "com.typesafe.akka" %% "akka-http-spray-json-experimental" % akkaV,
   "org.scalatest" %% "scalatest" % "2.2.6" % "test",
-  "com.datastax.spark" % "spark-cassandra-connector_2.11" % "2.0.0-M3"
+  "com.datastax.spark" % "spark-cassandra-connector_2.11" % "2.0.0-M3",
+  "net.liftweb" % "lift-json_2.11" % "2.6.2"
 
 )
 
