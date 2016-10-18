@@ -38,7 +38,7 @@ trait SparkService extends DatabaseAccess {
   }
 
   val sparkRoutes: Route = {
-    get {
+    post {
       path("create" / "name" / Segment / "email" / Segment) { (name: String, email: String) =>
         complete {
           val documentId = "user::" + UUID.randomUUID().toString
